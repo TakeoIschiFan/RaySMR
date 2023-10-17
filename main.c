@@ -41,6 +41,8 @@ int main(void){
     Vector2 vel = {-0.8, 0};
     Vector2 acc = {0, GRAVITY_PPF2};
 
+    Vector3 hsv_color = ColorToHSV(BLUE);
+
     while (!WindowShouldClose()){
         //update
         vel.x += acc.x;
@@ -61,12 +63,18 @@ int main(void){
         //render
         BeginDrawing();
         ClearBackground(RAYWHITE);
-        DrawCircleV(pos, BALL_SIZE, BLUE);
+
+        // apparently, changing the hue from 0 -> 300 in HSV space is a semi-convincing rainbow effect.
+        if (hsv_color.x >= 300){
+            hsv_color.x = 0;
+        }
+        hsv_color.x += 1;
+
+        DrawCircleV(pos, BALL_SIZE, ColorFromHSV(hsv_color.x, hsv_color.y, hsv_color.z));
 
         for (int i = 0; i < num_points; i+=2){
             DrawLineEx(lines[i], lines[i+1], LINE_THICKNESS, LINE_COLOR);
         };
-
         EndDrawing();
     }
     CloseWindow();
