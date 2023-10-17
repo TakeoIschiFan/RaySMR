@@ -7,9 +7,11 @@
 #define LINE_THICKNESS 12
 #define LINE_COLOR BLACK
 #define BALL_SIZE 30
+#define BALL_BORDER_SIZE 1.5
 
 // physics constants
 #define TARGET_FPS 60
+#define DRAW_RATE 40.0
 #define GRAVITY_PPF2 0.1
 
 int main(void){
@@ -35,9 +37,14 @@ int main(void){
     InitWindow(SCREEN_SIZE, SCREEN_SIZE, "Raysmr");
     SetTargetFPS(TARGET_FPS);
 
+    InitAudioDevice();
+    Sound woosh = LoadSound("assets/boop.wav");
+
     Vector2 pos = {400, 400};
     Vector2 vel = {-0.8, 0};
     Vector2 acc = {0, GRAVITY_PPF2};
+
+    float time_since_last_frame = 0;
 
     Vector3 hsv_color = ColorToHSV(BLUE);
 
@@ -45,7 +52,11 @@ int main(void){
 
 
     while (!WindowShouldClose()){
+
+
         //update
+        time_since_last_frame += GetFrameTime();
+
         vel.x += acc.x;
         vel.y += acc.y;
 
@@ -58,21 +69,25 @@ int main(void){
                 pos.y -= vel.y;
 
                 vel = Vector2Reflect(vel, normals[i/2]);
+                PlaySound(woosh);
             }
         };
 
         //render
         BeginDrawing();
-        ClearBackground(RAYWHITE);
 
-        // apparently, changing the hue from 0 -> 300 in HSV space is a semi-convincing rainbow effect.
-        if (hsv_color.x >= 300){
-            hsv_color.x = 0;
+        if(time_since_last_frame >= 1/DRAW_RATE){
+
+            time_since_last_frame = 0;
+                    // apparently, changing the hue from 0 -> 300 in HSV space is a semi-convincing rainbow effect.
+            if (hsv_color.x >= 300){
+                hsv_color.x = 0;
+            }
+            hsv_color.x += 1;
+
+            DrawCircleV(pos, BALL_SIZE + BALL_BORDER_SIZE, BLACK);
+            DrawCircleV(pos, BALL_SIZE, ColorFromHSV(hsv_color.x, hsv_color.y, hsv_color.z));
         }
-        hsv_color.x += 1;
-
-        DrawCircleV(pos, BALL_SIZE + 3, BLACK);
-        DrawCircleV(pos, BALL_SIZE, ColorFromHSV(hsv_color.x, hsv_color.y, hsv_color.z));
 
         for (int i = 0; i < num_points; i+=2){
             DrawLineEx(lines[i], lines[i+1], LINE_THICKNESS, LINE_COLOR);
@@ -80,7 +95,7 @@ int main(void){
         EndDrawing();
     }
     CloseWindow();
-
+    CloseAudioDevice();
     return 0;
 
 }

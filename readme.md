@@ -2,6 +2,8 @@
 
 Simple yet pretty bouncing ball simulation program written in C using [Raylib](https://github.com/raysan5/raylib).
 
+![Sample image using a triangle](assets/sample.png)
+
 ## Credits
 
 - The visuals are heavily inspired from Youtube channels like [@jdgcreative](https://www.youtube.com/@jdgcreative).
