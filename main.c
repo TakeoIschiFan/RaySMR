@@ -22,7 +22,7 @@ int main(void){
     const int num_points = (sizeof(lines) / sizeof(lines[0]));
 
     // calculate surface normals
-    Vector2 normals[num_points/2] = {0};
+    Vector2 normals[num_points/2];
 
     for (int i = 0; i < num_points; i+=2){
         Vector2 norm = {
@@ -32,8 +32,6 @@ int main(void){
         normals[i/2] = Vector2Normalize(norm);
     };
 
-
-
     InitWindow(SCREEN_SIZE, SCREEN_SIZE, "Raysmr");
     SetTargetFPS(TARGET_FPS);
 
@@ -42,6 +40,9 @@ int main(void){
     Vector2 acc = {0, GRAVITY_PPF2};
 
     Vector3 hsv_color = ColorToHSV(BLUE);
+
+    ClearBackground(RAYWHITE);
+
 
     while (!WindowShouldClose()){
         //update
@@ -70,6 +71,7 @@ int main(void){
         }
         hsv_color.x += 1;
 
+        DrawCircleV(pos, BALL_SIZE + 3, BLACK);
         DrawCircleV(pos, BALL_SIZE, ColorFromHSV(hsv_color.x, hsv_color.y, hsv_color.z));
 
         for (int i = 0; i < num_points; i+=2){
